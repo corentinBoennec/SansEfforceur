@@ -21,8 +21,8 @@ public class Client {
         return ID;
     }
 
-    public void getOut(){
-        in = false;
+    public void setIn(boolean b){
+        in = b;
     }
 
 }

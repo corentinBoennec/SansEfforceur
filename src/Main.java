@@ -19,7 +19,7 @@ public class Main {
             //on regarde combien de personne arrive  durant cette minute
             clientThisMin = r.getPoisson();
             for (k = 0; k < clientThisMin; k++) {
-                //on crée l'évenement de l'arive de chacun de ces personnes durant cette minute
+                //on crée l'évenement de l'arrivée de chacunes de ces personnes durant cette minute
                 bat.addEvent(new Entrer(sum, i));
                 //on garde un ID unique pour les evenements associés à une personne
                 i++;
@@ -32,7 +32,6 @@ public class Main {
 
         while (!bat.getEvents().isEmpty()) {
             bat.executeEvents();
-
         }
     }
 }

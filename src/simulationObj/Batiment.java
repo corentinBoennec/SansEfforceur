@@ -14,6 +14,7 @@ public class Batiment {
     private Ascenseur ascenseurs;
     private List<Evenement> events;
     private List<Client> clients;
+    private ArrayList<ArrayList<Client>> filesDattente;
 
     public Batiment(int nbAsenseur)
     {
@@ -21,7 +22,11 @@ public class Batiment {
         ascenseurs = new Ascenseur(0);
         clients= new ArrayList<Client>();
         events = new ArrayList<Evenement>();
-
+        filesDattente = new ArrayList<ArrayList<Client>>();
+        for(int i  = 0; i < 7; i++)
+        {
+            filesDattente.add(new ArrayList<Client>());
+        }
 
     }
 
@@ -57,11 +62,15 @@ public class Batiment {
             {
                 if(e instanceof Entrer)
                 {
-                    addClient(new Client(e.getID()));
+                    Client c = new Client(e.getID());
+                    c.setIn(true);
+                    addClient(c);
                 }
                 if(e instanceof  AppelerAscenseur)
                 {
+                    filesDattente.get(e.getEtageDepart()).add(getClient(e.getID()));
                     ascenseurs.addEvent(e);
+
                 }
 
                 tmp = e.action();
@@ -69,6 +78,7 @@ public class Batiment {
                 if (tmp instanceof Sortir)
                 {
                     deleteClient(tmp.getID());
+
                 }
 
                 // SINON le retour est différent de sortir et c'est donc un event qu'on ajoute à la liste
@@ -97,11 +107,13 @@ public class Batiment {
 
     private void deleteClient(int ID)
     {
-
         //On va recup ses infos avant
         for (Client c: clients) {
             if(c.getID() == ID)
-                c.getOut();
+            {
+                c.setIn(false);
+                break;
+            }
         }
     }
 
@@ -120,5 +132,36 @@ public class Batiment {
         }
     }
 
+    public int deplacerAscenseurs()
+    {
+        //deplacer les ascenseur d'une certaine manière
+        return 0;
+    }
+
+    private Client getClient(int ID)
+    {
+        for (Client c: clients) {
+            if(c.getID() == ID)
+            {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    private void moveClientFromTo(int etage1, int etage2)
+    {
+        if(etage2 == 0)
+        {
+            //supprimer dans etage 1
+            //supprimer dans etage 2
+        }
+        else
+        {
+            //supprimer dans etage 1
+            //ajouter dans etage 2
+        }
+
+    }
 
 }

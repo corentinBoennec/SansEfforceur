@@ -7,6 +7,8 @@ package Event;
 public abstract class Evenement {
     int tempsDattenteAvantEffet;
     int ID;
+    int etageDepart;
+    int etageArrive;
 
     public Evenement(int tempsDattenteAvantEffet, int ID)
     {
@@ -29,4 +31,11 @@ public abstract class Evenement {
         this.tempsDattenteAvantEffet = tempsDattenteAvantEffet;
     }
 
+    public int getEtageArrive() {
+        return etageArrive;
+    }
+
+    public int getEtageDepart() {
+        return etageDepart;
+    }
 }

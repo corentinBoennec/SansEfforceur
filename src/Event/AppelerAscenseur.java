@@ -6,8 +6,6 @@ import Rand.Rand;
  * Created by Corentin on 21/04/2019.
  */
 public class AppelerAscenseur extends Evenement {
-    int etageDepart;
-    int etageArrive;
     Rand r;
 
     AppelerAscenseur(int etageDepart, int ID)
