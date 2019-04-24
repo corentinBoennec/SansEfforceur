@@ -6,7 +6,7 @@ import simulationObj.Client;
 public class Main {
 
     public static void main(String[] args) {
-        int time = 600; //* 24; //24h en secondes
+        int time = 3600* 24; //24h en secondes
         Batiment bat = new Batiment(1);
         Rand r = new Rand(0.5, 60, 0, 7);
         //tout les (poissons) temps quelqu'un entre
@@ -33,5 +33,16 @@ public class Main {
         while (!bat.getEvents().isEmpty()) {
             bat.executeEvents();
         }
+        double meanTime = 0;
+        int nbClient = 0;
+        for (Client c: bat.getClientList())
+        {
+            meanTime += c.getTempsDattente();
+            nbClient ++;
+        }
+        if(nbClient != 0)
+            meanTime /= nbClient;
+
+        System.out.println("le temps d'attente moyen est de " + meanTime +" avec " + nbClient + " visiteurs.");
     }
 }

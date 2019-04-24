@@ -23,7 +23,7 @@ public class Batiment {
         clients= new ArrayList<Client>();
         events = new ArrayList<Evenement>();
         filesDattente = new ArrayList<ArrayList<Client>>();
-        for(int i  = 0; i < 7; i++)
+        for(int i  = 0; i < 8; i++)
         {
             filesDattente.add(new ArrayList<Client>());
         }
@@ -54,41 +54,67 @@ public class Batiment {
         List<Evenement> toAdd = new ArrayList<Evenement>();
 
         Evenement tmp;
+        Client c;
+        int time = 0;
         //pour chaque event de la liste,
         for (Evenement e: events)
         {
+            c = getClient(e.getID());
             //si son temps est inférieur ou = à 0 on lance son action.
             if(e.getTempsDattenteAvantEffet() <= 0)
             {
                 if(e instanceof Entrer)
                 {
-                    Client c = new Client(e.getID());
-                    c.setIn(true);
-                    addClient(c);
+                    Client nouvelArrivant = new Client(e.getID());
+                    nouvelArrivant.setIn(true);
+                    addClient(nouvelArrivant);
                 }
                 if(e instanceof  AppelerAscenseur)
                 {
-                    filesDattente.get(e.getEtageDepart()).add(getClient(e.getID()));
+                    //ajout d'un client a sa file d'attente
+                    filesDattente.get(e.getEtageDepart()).add(c);
+                    c.setWaiting(true);
+                }
+                if(e instanceof ArriveEtage)
+                {
+                   /* time = c.getEtageCourrant() - e.getEtageArrive()*10;
+                    if(time < 0)
+                        time = -time;*/
+                    c.setEtageCourrant(e.getEtageArrive());
+                    c.setWaiting(false);
+                    /*for(Client cl : clients)
+                    {
+                        if(c.getIsWaiting())
+                            c.addTempsDattente(time);
+                    }*/
+                }
+                if(e instanceof EntrerAscenseur)
+                {
+                    //On sort le client de sa file.
+                    filesDattente.get(e.getEtageDepart()).remove(c);
                     ascenseurs.addEvent(e);
-
+                    ascenseurs.addDestination(e.getEtageArrive());
                 }
 
-                tmp = e.action();
-                //SI le nouvel evenement est une sortie on supprime le client
-                if (tmp instanceof Sortir)
+
+                if(e.condition(getEtageCourrant(e.getID())))
                 {
-                    deleteClient(tmp.getID());
+                    tmp = e.action();
+                    //SI le nouvel evenement est une sortie on supprime le client
+                    if (tmp instanceof Sortir)
+                    {
+                        deleteClient(tmp.getID());
+                    }
 
+                    // SINON le retour est différent de sortir et c'est donc un event qu'on ajoute à la liste
+                    if(!(tmp instanceof Sortir))
+                    {
+                        toAdd.add(tmp);
+                    }
+
+                    //on supprime l'event de la liste
+                    toRemove.add(e);
                 }
-
-                // SINON le retour est différent de sortir et c'est donc un event qu'on ajoute à la liste
-                if(!(tmp instanceof Sortir))
-                {
-                    toAdd.add(tmp);
-                }
-
-                //on supprime l'event de la liste
-                toRemove.add(e);
             }
         }
         if(toAdd.isEmpty() && toRemove.isEmpty())
@@ -128,7 +154,11 @@ public class Batiment {
         for (Evenement e: events)
         {
             e.setTempsDattenteAvantEffet(e.getTempsDattenteAvantEffet() - min);
-                min = e.getTempsDattenteAvantEffet();
+        }
+        for(Client c : clients)
+        {
+            if(c.getIsWaiting())
+                c.addTempsDattente(min);
         }
     }
 
@@ -149,19 +179,18 @@ public class Batiment {
         return null;
     }
 
-    private void moveClientFromTo(int etage1, int etage2)
+    private int getEtageCourrant(int ID)
     {
-        if(etage2 == 0)
-        {
-            //supprimer dans etage 1
-            //supprimer dans etage 2
-        }
-        else
-        {
-            //supprimer dans etage 1
-            //ajouter dans etage 2
-        }
-
+            for (Client c: clients) {
+                if (c.getID() == ID)
+                {
+                    return c.getEtageCourrant();
+                }
+            }
+            return -1;
     }
 
+    public List<Client> getClientList() {
+        return clients;
+    }
 }

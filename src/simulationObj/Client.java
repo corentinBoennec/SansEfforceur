@@ -6,7 +6,10 @@ package simulationObj;
 public class Client {
     int tempsDattente;
     boolean in;
+    boolean isWaiting;
     int ID;
+    int etageCourrant;
+
 
 
     public Client(int ID)
@@ -14,6 +17,7 @@ public class Client {
         this.ID = ID;
         tempsDattente = 0;
         in = false;
+        isWaiting = false;
     };
 
     public int getID()
@@ -25,4 +29,28 @@ public class Client {
         in = b;
     }
 
+    public int getEtageCourrant() {
+        return etageCourrant;
+    }
+
+    public int getTempsDattente() {
+        return tempsDattente;
+    }
+
+    public void setEtageCourrant(int etageCourrant) {
+        this.etageCourrant = etageCourrant;
+    }
+
+    public void setTempsDattente(int tempsDattente) {
+        this.tempsDattente = tempsDattente;
+    }
+    public void addTempsDattente(int tempsDattente) {this.tempsDattente += tempsDattente; }
+
+    public void setWaiting(boolean waiting) {
+        isWaiting = waiting;
+    }
+
+    public boolean getIsWaiting() {
+        return isWaiting;
+    }
 }

@@ -11,8 +11,9 @@ import java.util.List;
  */
 public class Ascenseur {
     private List<Evenement> events;
-    private int nbPersonne;
-    private int nbMaxPersonne;
+    private List<Integer> destinations;
+    //private int nbPersonne;
+    //private int nbMaxPersonne;
     private int etage;
     private int nbEtage;
     private boolean direction; //false up, true down
@@ -24,14 +25,19 @@ public class Ascenseur {
         direction = false;
         nbEtage = 7;
         etage = 0;
-        nbMaxPersonne = 10;
-        nbPersonne = 0;
+       // nbMaxPersonne = 10;
+       // nbPersonne = 0;
         events = new ArrayList();
+        destinations = new ArrayList<>();
     }
 
     public void addEvent(Evenement event)
     {
         events.add(event);
+    }
+    public void addDestination(int etage)
+    {
+        destinations.add(etage);
     }
 
     public int getEtage() {
@@ -50,12 +56,5 @@ public class Ascenseur {
         return nbEtage;
     }
 
-    public int getNbMaxPersonne() {
-        return nbMaxPersonne;
-    }
-
-    public int getNbPersonne() {
-        return nbPersonne;
-    }
 
 }

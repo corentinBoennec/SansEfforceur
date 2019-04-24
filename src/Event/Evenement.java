@@ -17,6 +17,7 @@ public abstract class Evenement {
     }
 
     public abstract Evenement action();
+    public abstract boolean condition(int etageCourrant);
 
     public int getID()
     {
