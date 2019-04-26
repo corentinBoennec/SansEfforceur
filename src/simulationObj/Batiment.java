@@ -201,35 +201,56 @@ public class Batiment {
     //On a un ascenseur et on monte toujours du 1er on descend toujours des autres
     //premier à demander premier à être servit
     public int deplacerAscenseursFDFS() {
-        return filesDattente.get(0).get(0).etageCourrant;
-    }
+            int togo = 0;
+            //si l'ascenseur est vide
+            if(ascenseurs.getNbPersonne() == 0)
+            {
+                int etagevide = 0;
+                int proxiMin = 0;
+                if(!fileDattenteGlobale.isEmpty()) {
+                    proxiMin = Math.abs(ascenseurs.getEtage() - fileDattenteGlobale.get(0).getEtageCourrant());
+                    togo = fileDattenteGlobale.get(0).getEtageCourrant();
 
-    //retourne l'étage ou aller et l'ascenseur à utiliser
-    public List<Integer> clientsAServirFDFSMuliAscenseur() {
-        /*
-        * AJOUTER UN BOOLEAN FREE DANS ASCENSEUR
-        *
-        * int togo = filesDattente.get(0).get(0).etageCourrant;
-        * int proxiMin = ascenseurs.getNbEtage() + 1;
-        * Ascenseur toUse;
-        * for( Ascenseur a: Asenceurs)
-        * {
-        *   if (a.free == TRUE)
-        *   {
-        *       int proxi = Math.abs(a.getNbEtage() - togo)
-        *       if(proxiMin > proxi)
-        *       {
-        *           toUse = a;
-        *       }
-        *   }
-        * }
-        * List<Integer> res = new ArrayList<>();
-        * res.add(togo);
-        * res.add(a.ID);
-        * return res;
-        */
-        return null;
-    }
+                }else{
+                    etagevide ++;
+                }
+                //test si il y avait bien quelqu'un en attente
+                if(etagevide < ascenseurs.getNbEtage())
+                {
+                    if(togo < ascenseurs.getEtage())
+                    {
+                        ascenseurs.setDirection(true);
+                    }
+                    else
+                    {
+                        ascenseurs.setDirection(false);
+                    }
+                    ascenseurs.setEtage(togo);
+                    return  proxiMin;
+                }
+                else return 0;
+            }
+            else //si l'ascenseur n'est pas vide
+            {
+                togo = ascenseurs.getDestinations().get(0);
+                int proxiMin = ascenseurs.getNbEtage() + 1;
+                int proxiAbs;
+                int etagevide = 0;
+                if(togo < ascenseurs.getEtage())
+                {
+                    ascenseurs.setDirection(true);
+                }
+                else
+                {
+                    ascenseurs.setDirection(false);
+                }
+
+                int nb = Math.abs(ascenseurs.getEtage() - togo);
+                ascenseurs.setEtage(togo);
+                return nb;
+            }
+        }
+
 
     //la demande « la plus proche », quelle que soit la direction dans laquelle on se déplace
     public int deplacerAscenseurSSTF()
