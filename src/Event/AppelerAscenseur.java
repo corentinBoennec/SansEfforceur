@@ -19,9 +19,9 @@ public class AppelerAscenseur extends Evenement {
         return a;
     }
 
-    public boolean condition(int etageCourrant)
+    public boolean condition(int etageAscenseur)
     {
-        if(etageCourrant == this.etageDepart)
+        if(etageAscenseur == this.etageDepart)
             return true;
         else
             return false;

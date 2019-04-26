@@ -24,8 +24,8 @@ public class EntrerAscenseur extends Evenement {
     }
 
     @Override
-    public boolean condition(int etageCourrant) {
-        if(etageCourrant == etageDepart)
+    public boolean condition(int etageAscenseur) {
+        if(etageAscenseur == etageArrive)
             return true;
         return false;
     }

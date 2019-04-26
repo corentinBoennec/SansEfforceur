@@ -34,8 +34,12 @@ public class Ascenseur {
     public void addClient(Client client)
     {
         clientsID.add(client.getID());
+        nbPersonne++;
     }
-    public void removeClient(Client client) {clientsID.remove((Integer)client.getID());}
+    public void removeClient(Client client) {
+        clientsID.remove((Integer)client.getID());
+        nbPersonne--;
+    }
     public void addDestination(int etage)
     {
         destinations.add(etage);

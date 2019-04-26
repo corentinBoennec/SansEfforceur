@@ -9,11 +9,13 @@ public abstract class Evenement {
     int ID;
     int etageDepart;
     int etageArrive;
+    boolean on;
 
     public Evenement(int tempsDattenteAvantEffet, int ID)
     {
         this.tempsDattenteAvantEffet = tempsDattenteAvantEffet;
         this.ID = ID;
+        this.on = true;
     }
 
     public abstract Evenement action();
@@ -39,4 +41,11 @@ public abstract class Evenement {
     public int getEtageDepart() {
         return etageDepart;
     }
+
+    public void setOff() {
+        this.on = false;
+    }
+    public boolean getStatus()
+    {return on;}
+
 }

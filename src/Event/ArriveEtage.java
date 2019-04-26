@@ -35,9 +35,6 @@ public class ArriveEtage extends Evenement {
 
     public boolean condition(int etageCourrant)
     {
-        if(etageCourrant == this.etageArrive)
             return true;
-        else
-            return false;
     }
 }

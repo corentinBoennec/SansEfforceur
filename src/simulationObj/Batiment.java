@@ -64,41 +64,37 @@ public class Batiment {
             //si son temps est inférieur ou = à 0 on lance son action.
             if(e.getTempsDattenteAvantEffet() <= 0)
             {
-                if(e instanceof Entrer)
+                if(e instanceof Entrer && e.getStatus())
                 {
                     Client nouvelArrivant = new Client(e.getID());
                     nouvelArrivant.setIn(true);
                     addClient(nouvelArrivant);
+                    e.setOff();
                 }
-                if(e instanceof  AppelerAscenseur)
+                if(e instanceof  AppelerAscenseur && e.getStatus())
                 {
                     //ajout d'un client a sa file d'attente
-                    filesDattente.get(e.getEtageDepart()).add(c);
+                    filesDattente.get(c.getEtageCourrant()).add(c);
                     c.setWaiting(true);
+                    e.setOff();
                 }
 
-                if(e instanceof EntrerAscenseur)
+                if(e instanceof EntrerAscenseur && e.getStatus())
                 {
                     //On sort le client de sa file.
                     filesDattente.get(e.getEtageDepart()).remove(c);
                     ascenseurs.addClient(c);
                     ascenseurs.addDestination(e.getEtageArrive());
+                    e.setOff();
                 }
 
-                if(e instanceof ArriveEtage)
+                if(e instanceof ArriveEtage && e.getStatus())
                 {
-                   /* time = c.getEtageCourrant() - e.getEtageArrive()*10;
-                    if(time < 0)
-                        time = -time;*/
                     c.setEtageCourrant(e.getEtageArrive());
                     c.setWaiting(false);
                     ascenseurs.removeClient(c);
                     ascenseurs.removeDestination(e.getEtageArrive());
-                    /*for(Client cl : clients)
-                    {
-                        if(c.getIsWaiting())
-                            c.addTempsDattente(time);
-                    }*/
+                    e.setOff();
                 }
 
 
@@ -125,23 +121,27 @@ public class Batiment {
         }
         if(!toAdd.isEmpty())
             events.addAll(toAdd);
+        else // on laisse le temps aux evenement instantannnés de se succeder
+        {
+            //Deplacer les ascenseurs
+            int nbEtageParcourues = deplacerAscenseurSSTF();
+            ascenseurs.removeDestination(ascenseurs.getEtage());
+            //si la fonction a renvoyé 0 donc que personne n'est dans une file d'attente et que personne n'est dans l'ascenseur.
+            if(nbEtageParcourues == 0) {
+                //on avance jusqu'a prochain evennement
+                advanceToNextEvent();
+            }
+            else
+            {
+                advanceTime(nbEtageParcourues * 10);
+            }
+        }
+
         if(!toRemove.isEmpty())
         {
             events.removeAll(toRemove);
         }
-        int nbEtageParcourues = deplacerAscenseurSSTF();
-        //si la fonction a renvoyé 0 donc que personne n'est dans une file d'attente.
-        if(nbEtageParcourues == 0) {
-            //on avance jusqu'a prochain evennement
-            advanceToNextEvent();
-        }
-        else
-        {
-            advanceTime(nbEtageParcourues * 10);
-        }
 
-
-        // on incrémente tous les temps d'attente client encore dans le circuit
     }
 
     private void deleteClient(int ID)
@@ -274,7 +274,7 @@ public class Batiment {
                 {
                     proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
 
-                    if(proxiAbs<proxiMin){
+                    if(proxiAbs<proxiMin && proxiAbs != 0){
                         proxiMin = proxiAbs;
                         togo = c.get(0).etageCourrant;
                     }
@@ -313,8 +313,9 @@ public class Batiment {
             {
                 ascenseurs.setDirection(false);
             }
+            int nb = Math.abs(ascenseurs.getEtage() - togo);
             ascenseurs.setEtage(togo);
-            return Math.abs(ascenseurs.getEtage() - togo);
+            return nb;
         }
     }
 
