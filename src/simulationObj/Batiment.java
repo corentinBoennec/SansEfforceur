@@ -361,6 +361,7 @@ public class Batiment {
     }
 
 
+
     public int deplacerAscensceur(String algo) {
         int nbEtageDeplace = 0;
 
