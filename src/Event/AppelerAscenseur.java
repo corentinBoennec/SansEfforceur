@@ -12,8 +12,6 @@ public class AppelerAscenseur extends Evenement {
         super(0,ID);
         this.etageDepart = etageDepart;
 
-
-
     }
 
     public Evenement action(){

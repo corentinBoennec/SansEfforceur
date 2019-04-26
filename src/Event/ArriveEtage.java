@@ -26,7 +26,7 @@ public class ArriveEtage extends Evenement {
         else
         {
             appel = new AppelerAscenseur(etageArrive, ID);
-            appel.setTempsDattenteAvantEffet(r.getExpo());
+            appel.setTempsDattenteAvantEffet(r.getExpo()*60);
             e = appel;
         }
 

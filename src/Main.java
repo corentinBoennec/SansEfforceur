@@ -6,7 +6,7 @@ import simulationObj.Client;
 public class Main {
 
     public static void main(String[] args) {
-        int time = 3600* 24; //24h en secondes
+        int time = 600; //24h en secondes
         Batiment bat = new Batiment(1);
         Rand r = new Rand(0.5, 60, 0, 7);
         //tout les (poissons) temps quelqu'un entre

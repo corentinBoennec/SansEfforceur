@@ -76,6 +76,15 @@ public class Batiment {
                     filesDattente.get(e.getEtageDepart()).add(c);
                     c.setWaiting(true);
                 }
+
+                if(e instanceof EntrerAscenseur)
+                {
+                    //On sort le client de sa file.
+                    filesDattente.get(e.getEtageDepart()).remove(c);
+                    ascenseurs.addClient(c);
+                    ascenseurs.addDestination(e.getEtageArrive());
+                }
+
                 if(e instanceof ArriveEtage)
                 {
                    /* time = c.getEtageCourrant() - e.getEtageArrive()*10;
@@ -83,22 +92,18 @@ public class Batiment {
                         time = -time;*/
                     c.setEtageCourrant(e.getEtageArrive());
                     c.setWaiting(false);
+                    ascenseurs.removeClient(c);
+                    ascenseurs.removeDestination(e.getEtageArrive());
                     /*for(Client cl : clients)
                     {
                         if(c.getIsWaiting())
                             c.addTempsDattente(time);
                     }*/
                 }
-                if(e instanceof EntrerAscenseur)
-                {
-                    //On sort le client de sa file.
-                    filesDattente.get(e.getEtageDepart()).remove(c);
-                    ascenseurs.addEvent(e);
-                    ascenseurs.addDestination(e.getEtageArrive());
-                }
 
 
-                if(e.condition(getEtageCourrant(e.getID())))
+
+                if(e.condition(ascenseurs.getEtage()))
                 {
                     tmp = e.action();
                     //SI le nouvel evenement est une sortie on supprime le client
@@ -118,14 +123,21 @@ public class Batiment {
                 }
             }
         }
-        if(toAdd.isEmpty() && toRemove.isEmpty())
+        if(!toAdd.isEmpty())
+            events.addAll(toAdd);
+        if(!toRemove.isEmpty())
         {
-            advanceTime();
+            events.removeAll(toRemove);
+        }
+        int nbEtageParcourues = deplacerAscenseurSSTF();
+        //si la fonction a renvoyé 0 donc que personne n'est dans une file d'attente.
+        if(nbEtageParcourues == 0) {
+            //on avance jusqu'a prochain evennement
+            advanceToNextEvent();
         }
         else
         {
-            events.addAll(toAdd);
-            events.removeAll(toRemove);
+            advanceTime(nbEtageParcourues * 10);
         }
 
 
@@ -144,22 +156,41 @@ public class Batiment {
         }
     }
 
-    private void advanceTime()
+    private void advanceToNextEvent()
     {
-        int min = events.get(0).getTempsDattenteAvantEffet();
+        int min = Integer.MAX_VALUE;
         for (Evenement e: events)
         {
             if(e.getTempsDattenteAvantEffet() < min)
                 min = e.getTempsDattenteAvantEffet();
+            if(min == 0)
+                break;
         }
+        if(min != 0)
+        {
+            for (Evenement e: events)
+            {
+                e.setTempsDattenteAvantEffet(e.getTempsDattenteAvantEffet() - min);
+            }
+            for(Client c : clients)
+            {
+                if(c.getIsWaiting())
+                    c.addTempsDattente(min);
+            }
+        }
+
+    }
+    private void advanceTime(int time)
+    {
+
         for (Evenement e: events)
         {
-            e.setTempsDattenteAvantEffet(e.getTempsDattenteAvantEffet() - min);
+            e.setTempsDattenteAvantEffet(e.getTempsDattenteAvantEffet() - time);
         }
         for(Client c : clients)
         {
             if(c.getIsWaiting())
-                c.addTempsDattente(min);
+                c.addTempsDattente(time);
         }
     }
 
@@ -228,18 +259,63 @@ public class Batiment {
     }
 
     //la demande « la plus proche », quelle que soit la direction dans laquelle on se déplace
-    public int clientsAServirSSTF()
+    public int deplacerAscenseurSSTF()
     {
-        int proxiMin = ascenseurs.getNbEtage() + 1;
         int togo = 0;
-        for(List<Client> c: filesDattente){
-            int proxi = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
-            if(proxi<proxiMin){
-                proxiMin = proxi;
-                togo = c.get(0).etageCourrant;
+        //si l'ascenseur est vide
+        if(ascenseurs.getNbPersonne() == 0)
+        {
+            int proxiMin = ascenseurs.getNbEtage() + 1;
+            int proxiAbs;
+            int etagevide = 0;
+
+            for(List<Client> c: filesDattente){
+                if(!c.isEmpty())
+                {
+                    proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
+
+                    if(proxiAbs<proxiMin){
+                        proxiMin = proxiAbs;
+                        togo = c.get(0).etageCourrant;
+                    }
+                }
+                else
+                {
+                    etagevide++;
+                }
             }
+
+
+            //test si il y avait bien quelqu'un en attente
+            if(etagevide < ascenseurs.getNbEtage())
+            {
+                if(togo < ascenseurs.getEtage())
+                {
+                    ascenseurs.setDirection(true);
+                }
+                else
+                {
+                    ascenseurs.setDirection(false);
+                }
+                ascenseurs.setEtage(togo);
+                return  proxiMin;
+            }
+            else return 0;
         }
-        return  togo;
+        else //si l'ascenseur n'est pas vide
+        {
+            togo = ascenseurs.getDestinations().get(0);
+            if(togo < ascenseurs.getEtage())
+            {
+                ascenseurs.setDirection(true);
+            }
+            else
+            {
+                ascenseurs.setDirection(false);
+            }
+            ascenseurs.setEtage(togo);
+            return Math.abs(ascenseurs.getEtage() - togo);
+        }
     }
 
     

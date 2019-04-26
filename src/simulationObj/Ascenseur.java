@@ -10,9 +10,9 @@ import java.util.List;
  * Created by Corentin on 21/04/2019.
  */
 public class Ascenseur {
-    private List<Evenement> events;
+    private List<Integer> clientsID;
     private List<Integer> destinations;
-    //private int nbPersonne;
+    private int nbPersonne;
     //private int nbMaxPersonne;
     private int etage;
     private int nbEtage;
@@ -23,22 +23,24 @@ public class Ascenseur {
     {
         this.ID = ID;
         direction = false;
-        nbEtage = 7;
+        nbEtage = 8;
         etage = 0;
        // nbMaxPersonne = 10;
        // nbPersonne = 0;
-        events = new ArrayList();
+        clientsID = new ArrayList();
         destinations = new ArrayList<>();
     }
 
-    public void addEvent(Evenement event)
+    public void addClient(Client client)
     {
-        events.add(event);
+        clientsID.add(client.getID());
     }
+    public void removeClient(Client client) {clientsID.remove((Integer)client.getID());}
     public void addDestination(int etage)
     {
         destinations.add(etage);
     }
+    public void removeDestination(int etage) {destinations.remove((Integer)etage);}
 
     public int getEtage() {
         return etage;
@@ -56,5 +58,23 @@ public class Ascenseur {
         return nbEtage;
     }
 
+    public void setDirection(boolean direction) {
+        this.direction = direction;
+    }
 
+    public void setEtage(int etage) {
+        this.etage = etage;
+    }
+
+    public void setNbPersonne(int nbPersonne) {
+        this.nbPersonne = nbPersonne;
+    }
+
+    public int getNbPersonne() {
+        return nbPersonne;
+    }
+
+    public List<Integer> getDestinations() {
+        return destinations;
+    }
 }
