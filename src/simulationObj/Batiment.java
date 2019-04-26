@@ -6,6 +6,7 @@ import simulationObj.Ascenseur;
 import javax.swing.tree.ExpandVetoException;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.*;
 
 /**
  * Created by Corentin on 21/04/2019.
@@ -193,4 +194,53 @@ public class Batiment {
     public List<Client> getClientList() {
         return clients;
     }
+
+    //On a un ascenseur et on monte toujours du 1er on descend toujours des autres
+    //premier à demander premier à être servit
+    public int clientsAServirFDFS(){
+        return filesDattente.get(0).get(0).etageCourrant ;
+    }
+    //retourne l'étage ou aller et l'ascenseur à utiliser
+    public List<Integer> clientsAServirFDFSMuliAscenseur(){
+        /*
+        * AJOUTER UN BOOLEAN FREE DANS ASCENSEUR
+        *
+        * int togo = filesDattente.get(0).get(0).etageCourrant;
+        * int proxiMin = ascenseurs.getNbEtage() + 1;
+        * Ascenseur toUse;
+        * for( Ascenseur a: Asenceurs)
+        * {
+        *   if (a.free == TRUE)
+        *   {
+        *       int proxi = Math.abs(a.getNbEtage() - togo)
+        *       if(proxiMin > proxi)
+        *       {
+        *           toUse = a;
+        *       }
+        *   }
+        * }
+        * List<Integer> res = new ArrayList<>();
+        * res.add(togo);
+        * res.add(a.ID);
+        * return res;
+        */
+        return null;
+    }
+
+    //la demande « la plus proche », quelle que soit la direction dans laquelle on se déplace
+    public int clientsAServirSSTF()
+    {
+        int proxiMin = ascenseurs.getNbEtage() + 1;
+        int togo = 0;
+        for(List<Client> c: filesDattente){
+            int proxi = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
+            if(proxi<proxiMin){
+                proxiMin = proxi;
+                togo = c.get(0).etageCourrant;
+            }
+        }
+        return  togo;
+    }
+
+    
 }
