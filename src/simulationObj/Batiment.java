@@ -124,7 +124,7 @@ public class Batiment {
         else // on laisse le temps aux evenement instantannnés de se succeder
         {
             //Deplacer les ascenseurs
-            int nbEtageParcourues = deplacerAscenseurSSTF();
+            int nbEtageParcourues = deplacerAscensceur("SSTF");
             ascenseurs.removeDestination(ascenseurs.getEtage());
             //si la fonction a renvoyé 0 donc que personne n'est dans une file d'attente et que personne n'est dans l'ascenseur.
             if(nbEtageParcourues == 0) {
@@ -228,7 +228,7 @@ public class Batiment {
 
     //On a un ascenseur et on monte toujours du 1er on descend toujours des autres
     //premier à demander premier à être servit
-    public int clientsAServirFDFS(){
+    public int deplacerAscenseursFDFS(){
         return filesDattente.get(0).get(0).etageCourrant ;
     }
     //retourne l'étage ou aller et l'ascenseur à utiliser
@@ -317,6 +317,25 @@ public class Batiment {
             ascenseurs.setEtage(togo);
             return nb;
         }
+    }
+
+    public int deplacerAscensceur(String algo)
+    {
+        int nbEtageDeplace = 0;
+        switch (algo)
+        {
+            case "SSTF":
+                nbEtageDeplace =  deplacerAscenseurSSTF();
+                break;
+            case "FDFS":
+                nbEtageDeplace = deplacerAscenseursFDFS();
+                break;
+            default:
+                nbEtageDeplace = deplacerAscenseurSSTF();
+                break;
+        }
+        return  nbEtageDeplace;
+
     }
 
     
