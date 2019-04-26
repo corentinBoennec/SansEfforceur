@@ -226,40 +226,8 @@ public class Batiment {
         return clients;
     }
 
-    //On a un ascenseur et on monte toujours du 1er on descend toujours des autres
-    //premier à demander premier à être servit
-    public int clientsAServirFDFS(){
-        return filesDattente.get(0).get(0).etageCourrant ;
-    }
-    //retourne l'étage ou aller et l'ascenseur à utiliser
-    public List<Integer> clientsAServirFDFSMuliAscenseur(){
-        /*
-        * AJOUTER UN BOOLEAN FREE DANS ASCENSEUR
-        *
-        * int togo = filesDattente.get(0).get(0).etageCourrant;
-        * int proxiMin = ascenseurs.getNbEtage() + 1;
-        * Ascenseur toUse;
-        * for( Ascenseur a: Asenceurs)
-        * {
-        *   if (a.free == TRUE)
-        *   {
-        *       int proxi = Math.abs(a.getNbEtage() - togo)
-        *       if(proxiMin > proxi)
-        *       {
-        *           toUse = a;
-        *       }
-        *   }
-        * }
-        * List<Integer> res = new ArrayList<>();
-        * res.add(togo);
-        * res.add(a.ID);
-        * return res;
-        */
-        return null;
-    }
-
-    //la demande « la plus proche », quelle que soit la direction dans laquelle on se déplace
-    public int deplacerAscenseurSSTF()
+     //premier à demander premier servit
+    public int deplacerAscenseurFDFS()
     {
         int togo = 0;
         //si l'ascenseur est vide
@@ -319,5 +287,133 @@ public class Batiment {
         }
     }
 
-    
+    public int deplacerAscenseurSSTF()
+    {
+        int togo = 0;
+        //si l'ascenseur est vide
+        if(ascenseurs.getNbPersonne() == 0)
+        {
+            int proxiMin = ascenseurs.getNbEtage() + 1;
+            int proxiAbs;
+            int etagevide = 0;
+
+            for(List<Client> c: filesDattente)
+            {
+                if(!c.isEmpty())
+                {
+                    proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
+                    if(proxiAbs<proxiMin && proxiAbs != 0)
+                    {
+                        proxiMin = proxiAbs;
+                        togo = c.get(0).etageCourrant;
+                    }
+                }
+                else
+                {
+                    etagevide++;
+                }
+            }
+            //test si il y avait bien quelqu'un en attente
+            if(etagevide < ascenseurs.getNbEtage())
+            {
+                if(togo < ascenseurs.getEtage())
+                {
+                    ascenseurs.setDirection(true);
+                }
+                else
+                {
+                    ascenseurs.setDirection(false);
+                }
+
+                for(List<Client> c: filesDattente)
+                {
+                    if(!c.isEmpty())
+                    {
+                        if (ascenseurs.isDirectionDown() == false)
+                        {
+                            proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
+                            if(c.get(0).getEtageCourrant() < ascenseurs.getEtage())
+                            {
+                                if(proxiAbs<proxiMin && proxiAbs != 0)
+                                {
+                                    proxiMin = proxiAbs;
+                                    togo = c.get(0).etageCourrant;
+                                }
+                            }
+                        }else
+                        {
+                            proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
+                            if(c.get(0).getEtageCourrant() > ascenseurs.getEtage())
+                            {
+                                if(proxiAbs<proxiMin && proxiAbs != 0)
+                                {
+                                    proxiMin = proxiAbs;
+                                    togo = c.get(0).etageCourrant;
+                                }
+                            }
+                        }
+                    }
+
+                }
+                ascenseurs.setEtage(togo);
+                return  proxiMin;
+            }
+            else return 0;
+        }
+        else //si l'ascenseur n'est pas vide
+        {
+            int proxiMin = ascenseurs.getNbEtage() + 1;
+            int proxiAbs;
+            int etagevide = 0;
+            togo = ascenseurs.getDestinations().get(0);
+            if(togo < ascenseurs.getEtage())
+            {
+                ascenseurs.setDirection(true);
+            }
+            else
+            {
+                ascenseurs.setDirection(false);
+            }
+            for(List<Client> c: filesDattente)
+            {
+                if(!c.isEmpty())
+                {
+                    if (ascenseurs.isDirectionDown() == false)
+                    {
+                        proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
+                        if(c.get(0).getEtageCourrant() < ascenseurs.getEtage())
+                        {
+                            if(proxiAbs<proxiMin && proxiAbs != 0)
+                            {
+                                proxiMin = proxiAbs;
+                                togo = c.get(0).etageCourrant;
+                            }
+                        }
+                    }else
+                    {
+                        proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
+                        if(c.get(0).getEtageCourrant() > ascenseurs.getEtage())
+                        {
+                            if(proxiAbs<proxiMin && proxiAbs != 0)
+                            {
+                                proxiMin = proxiAbs;
+                                togo = c.get(0).etageCourrant;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    etagevide++;
+                }
+            }
+
+            int nb = Math.abs(ascenseurs.getEtage() - togo);
+            ascenseurs.setEtage(togo);
+            return nb;
+        }
+    }
+
+
+
 }
