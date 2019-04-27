@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         int time = 24* 3600; //24h en secondes
-        Batiment bat = new Batiment(2, "SSTF");
+        Batiment bat = new Batiment(3, "FCFS");
         Rand r = new Rand(0.5, 60, 0, 7);
         //tout les (poissons) temps quelqu'un entre
         int sum = 0;

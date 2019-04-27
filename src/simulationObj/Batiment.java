@@ -438,7 +438,7 @@ public class Batiment {
                 nbEtageDeplace = deplacerAscenseurSSTF(ID);
                 break;
             case "FCFS":
-                //nbEtageDeplace = deplacerAscenseursFCFS(ID);
+                nbEtageDeplace = deplacerAscenseursFCFS(ID);
                 break;
             default:
                 nbEtageDeplace = deplacerAscenseurSSTF(ID);
@@ -519,46 +519,46 @@ public class Batiment {
         ascenseurs[ID].setDirection(dir);
         return direction;
     }
-    /*public int deplacerAscenseursFCFS(int ID) {
-        int togo = 0;
-        //si l'ascenseur est vide
-        if (ascenseurs.getNbPersonne() == 0) {
-            int etagevide = 0;
-            int proxiMin = 0;
-            if (!fileDattenteGlobale.isEmpty()) {
-                proxiMin = Math.abs(ascenseurs.getEtage() - fileDattenteGlobale.get(0).getEtageCourrant());
-                togo = fileDattenteGlobale.get(0).getEtageCourrant();
-
-            } else {
-                ascenseurs.ralenti();
-            }
-
-            //test si il y avait bien quelqu'un en attente
-            if (etagevide < ascenseurs.getNbEtage()) {
-                if (togo < ascenseurs.getEtage()) {
-                    ascenseurs.setDirection(true);
-                } else {
-                    ascenseurs.setDirection(false);
-                }
-                ascenseurs.setEtage(togo);
-                return proxiMin;
-            } else return 0;
-        } else //si l'ascenseur n'est pas vide
+    public int deplacerAscenseursFCFS(int ID) {
+        int direction = 0;
+        if (!ascenseurs[ID].getDestinations().isEmpty())// si l'on a des destinations prévues
         {
-            togo = ascenseurs.getDestinations().get(0);
-            int proxiMin = ascenseurs.getNbEtage() + 1;
-            int proxiAbs;
-            int etagevide = 0;
-            if (togo < ascenseurs.getEtage()) {
-                ascenseurs.setDirection(true);
-            } else {
-                ascenseurs.setDirection(false);
+            int diff;
+            diff = ascenseurs[ID].getEtage() - ascenseurs[ID].getDestinations().get(0);
+            if (diff != 0) {
+                if (diff > 0) {
+                    direction = -1;
+                } else
+                    direction = 1;
             }
-
-            int nb = Math.abs(ascenseurs.getEtage() - togo);
-            ascenseurs.setEtage(togo);
-            return nb;
         }
-    }*/
+        if (direction == 0) {
+            if (!fileDattenteGlobale.isEmpty()) {
+                fileDattenteGlobale.get(0).getEtageCourrant();
+                int diff;
+                diff = ascenseurs[ID].getEtage() - fileDattenteGlobale.get(0).getEtageCourrant();
+                if (diff != 0) {
+                    if (diff > 0) {
+                        direction = -1;
+                    } else
+                        direction = 1;
+                }
+                //éviter d'avoir 1 client dans 2 ascenseurs
+                //ascenseurs[ID].getClientsID().contains(fileDattenteGlobale.get(0))
+            } else {
+                ralenti();
+            }
+        }
+        ascenseurs[ID].setEtage(ascenseurs[ID].getEtage() + direction);
+        ascenseurs[ID].removeDestination(ascenseurs[ID].getEtage());
+        boolean dir;
+        if(direction == 1)
+            dir = false;
+        else
+            dir = true;
+        ascenseurs[ID].setDirection(dir);
+        return direction;
+
+    }
 
 }
