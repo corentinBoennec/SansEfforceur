@@ -33,7 +33,7 @@ public class ArriveEtage extends Evenement {
         return e;
     }
 
-    public boolean condition(int etageCourrant)
+    public boolean condition(int[] etageCourrant)
     {
             return true;
     }

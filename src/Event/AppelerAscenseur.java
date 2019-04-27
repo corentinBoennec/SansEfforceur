@@ -19,14 +19,12 @@ public class AppelerAscenseur extends Evenement {
         return a;
     }
 
-    public boolean condition(int etageAscenseur)
-    {
-        if(etageAscenseur == this.etageDepart)
-            return true;
-        else
-            return false;
+    public boolean condition(int[] etageAscenseur) {
+        for (int i = 0; i < etageAscenseur.length; i++)
+        {
+            if (etageAscenseur[i] == etageDepart)
+                return true;
+        }
+        return false;
     }
-
-
-
 }

@@ -31,6 +31,10 @@ public class Ascenseur {
         destinations = new ArrayList<>();
     }
 
+    public List<Integer> getClientsID() {
+        return clientsID;
+    }
+
     public void addClient(Client client)
     {
         clientsID.add(client.getID());

@@ -15,7 +15,7 @@ public class Entrer extends Evenement {
        return appel;
     }
 
-    public boolean condition(int etageCourrant)
+    public boolean condition(int[] etageCourrant)
     {
         return true;
     }

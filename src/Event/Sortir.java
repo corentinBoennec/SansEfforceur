@@ -16,11 +16,11 @@ public class Sortir extends Evenement {
         return null;
     }
 
-    public boolean condition(int etageCourrant)
-    {
-        if(etageCourrant == 0)
-            return true;
-        else
-            return false;
+    public boolean condition(int[] etageAscenseur) {
+        for (int i = 0; i < etageAscenseur.length; i++) {
+            if (etageAscenseur[i] == 0)
+                return true;
+        }
+        return false;
     }
 }
