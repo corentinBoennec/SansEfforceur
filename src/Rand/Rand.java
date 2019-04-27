@@ -1,5 +1,5 @@
 package Rand;
-import org.apache.commons.math3.distribution.*;
+import distribution.*;
 /**
  * Created by Corentin on 21/04/2019.
  */

@@ -7,15 +7,15 @@ import Rand.Rand;
  */
 public class AppelerAscenseur extends Evenement {
 
-    AppelerAscenseur(int etageDepart, int ID)
+    AppelerAscenseur(int etageDepart, int ID,Rand r)
     {
-        super(0,ID);
+        super(0,ID, r);
         this.etageDepart = etageDepart;
 
     }
 
     public Evenement action(){
-        EntrerAscenseur a = new EntrerAscenseur(etageDepart, ID);
+        EntrerAscenseur a = new EntrerAscenseur(etageDepart, ID, r);
         return a;
     }
 

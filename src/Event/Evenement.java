@@ -1,5 +1,5 @@
 package Event;
-
+import Rand.Rand;
 
 /**
  * Created by Corentin on 21/04/2019.
@@ -10,12 +10,14 @@ public abstract class Evenement {
     int etageDepart;
     int etageArrive;
     boolean on;
+    Rand r;
 
-    public Evenement(int tempsDattenteAvantEffet, int ID)
+    public Evenement(int tempsDattenteAvantEffet, int ID, Rand r )
     {
         this.tempsDattenteAvantEffet = tempsDattenteAvantEffet;
         this.ID = ID;
         this.on = true;
+        this.r = r;
     }
 
     public abstract Evenement action();

@@ -4,11 +4,11 @@ package simulationObj;
  * Created by Corentin on 21/04/2019.
  */
 public class Client {
-    int tempsDattente;
-    boolean in;
-    boolean isWaiting;
-    int ID;
-    int etageCourrant;
+    private int tempsDattente;
+    private boolean in;
+    private boolean isWaiting;
+    private int ID;
+    private int etageCourrant;
 
 
 

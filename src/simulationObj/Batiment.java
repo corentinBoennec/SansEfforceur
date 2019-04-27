@@ -1,9 +1,7 @@
 package simulationObj;
 
 import Event.*;
-import simulationObj.Ascenseur;
 
-import javax.swing.tree.ExpandVetoException;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.*;
@@ -82,10 +80,10 @@ public class Batiment {
                     //On sort le client de sa file.
                     filesDattente.get(e.getEtageDepart()).remove(c);
                     fileDattenteGlobale.remove(c);
-                    for(int i = 0; i < ascenseurs.length; i++) {
-                        if(ascenseurs[i].getEtage() == e.getEtageDepart()) {
-                            ascenseurs[i].addClient(c);
-                            ascenseurs[i].addDestination(e.getEtageArrive());
+                    for(Ascenseur a : ascenseurs) {
+                        if(a.getEtage() == e.getEtageDepart()) {
+                            a.addClient(c);
+                            a.addDestination(e.getEtageArrive());
                             break;
                         }
                     }
@@ -95,11 +93,11 @@ public class Batiment {
                 if (e instanceof ArriveEtage && e.getStatus()) {
                     c.setEtageCourrant(e.getEtageArrive());
                     c.setWaiting(false);
-                    for(int i = 0; i < ascenseurs.length; i++) {
-                            if(ascenseurs[i].getClientsID().contains(c))
+                    for (Ascenseur a : ascenseurs) {
+                            if(a.getClientsID().contains(c.getID()))
                             {
-                                ascenseurs[i].removeClient(c);
-                                ascenseurs[i].removeDestination(e.getEtageArrive());
+                                a.removeClient(c);
+                                a.removeDestination(e.getEtageArrive());
                             }
                             break;
                     }
@@ -220,8 +218,8 @@ public class Batiment {
         return clients;
     }
 
-    public int deplacerAscensceur(int ID,String algo) {
-        int nbEtageDeplace = 0;
+    private int deplacerAscensceur(int ID,String algo) {
+        int nbEtageDeplace;
 
         switch (algo) {
             case "SSTF":
@@ -238,14 +236,14 @@ public class Batiment {
         return nbEtageDeplace;
     }
 
-    public int ralentiBas(int ID)
+    private int ralentiBas(int ID)
     {
         int direction = 0;
         if(ascenseurs[ID].getEtage() > 0)
             direction = -1;
         return direction;
     }
-    public int ralentiMilieu(int ID)
+    private int ralentiMilieu(int ID)
     {
         int direction = 0;
         if(ascenseurs[ID].getEtage() > ascenseurs[ID].getNbEtage()/2)
@@ -255,7 +253,12 @@ public class Batiment {
         return direction;
     }
 
-    public int[] getEtagesAscenseurs()
+    private int ralentiStatic()
+    {
+        return 0;
+    }
+
+    private int[] getEtagesAscenseurs()
     {
         int[] etages = new int[ascenseurs.length];
         for (int i = 0; i < ascenseurs.length; i++)
@@ -265,7 +268,7 @@ public class Batiment {
         return etages;
     }
 
-    public int deplacerAscenseurSSTF(int ID)
+    private int deplacerAscenseurSSTF(int ID)
     {
         int direction = 0; //0 : pas de mouvement, 1 haut, -1 bas
         int etagevide = 0;
@@ -307,21 +310,19 @@ public class Batiment {
                     etagevide++;
             }
             if (etagevide == ascenseurs[ID].getNbEtage()) {
-                direction = ralentiBas(ID);
+                direction = ralentiStatic();
             }
 
         }
         ascenseurs[ID].setEtage(ascenseurs[ID].getEtage() + direction);
         ascenseurs[ID].removeDestination(ascenseurs[ID].getEtage());
-        boolean dir;
         if(direction == 1)
-            dir = false;
+            ascenseurs[ID].setDirection(false);
         else
-            dir = true;
-        ascenseurs[ID].setDirection(dir);
+            ascenseurs[ID].setDirection(true);
         return direction;
     }
-    public int deplacerAscenseursFCFS(int ID) {
+    private int deplacerAscenseursFCFS(int ID) {
         int direction = 0;
         if (!ascenseurs[ID].getDestinations().isEmpty())// si l'on a des destinations prévues
         {
@@ -336,7 +337,6 @@ public class Batiment {
         }
         if (direction == 0) {
             if (!fileDattenteGlobale.isEmpty()) {
-                fileDattenteGlobale.get(0).getEtageCourrant();
                 int diff;
                 diff = ascenseurs[ID].getEtage() - fileDattenteGlobale.get(0).getEtageCourrant();
                 if (diff != 0) {
@@ -348,19 +348,16 @@ public class Batiment {
                 //éviter d'avoir 1 client dans 2 ascenseurs
                 //ascenseurs[ID].getClientsID().contains(fileDattenteGlobale.get(0))
             } else {
-                direction = ralentiBas(ID);
+                direction = ralentiStatic();
             }
         }
         ascenseurs[ID].setEtage(ascenseurs[ID].getEtage() + direction);
         ascenseurs[ID].removeDestination(ascenseurs[ID].getEtage());
-        boolean dir;
         if(direction == 1)
-            dir = false;
+            ascenseurs[ID].setDirection(false);
         else
-            dir = true;
-        ascenseurs[ID].setDirection(dir);
+            ascenseurs[ID].setDirection(true);
         return direction;
-
     }
 
     public Ascenseur[] getAscenseurs() {

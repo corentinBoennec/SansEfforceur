@@ -22,7 +22,7 @@ public class Main {
             clientThisMin = r.getPoisson();
             for (k = 0; k < clientThisMin; k++) {
                 //on crée l'évenement de l'arrivée de chacunes de ces personnes durant cette minute
-                bat.addEvent(new Entrer(sum, i));
+                bat.addEvent(new Entrer(sum, i, r));
                 //on garde un ID unique pour les evenements associés à une personne
                 i++;
             }

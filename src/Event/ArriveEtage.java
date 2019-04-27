@@ -6,12 +6,11 @@ import Rand.Rand;
  * Created by Corentin on 24/04/2019.
  */
 public class ArriveEtage extends Evenement {
-    Rand r;
-    public ArriveEtage(int etageArrive, int ID)
+    public ArriveEtage(int etageArrive, int ID, Rand r)
     {
-        super(0,ID);
+        super(0,ID, r);
         this.etageArrive = etageArrive;
-        this.r = new Rand(0.5, 60, 1, 7);
+
     }
     public Evenement action() {
         Evenement e;
@@ -20,12 +19,12 @@ public class ArriveEtage extends Evenement {
 
         if(etageArrive == 0)
         {
-            s = new Sortir(ID);
+            s = new Sortir(ID, r);
             e = s;
         }
         else
         {
-            appel = new AppelerAscenseur(etageArrive, ID);
+            appel = new AppelerAscenseur(etageArrive, ID, r);
             appel.setTempsDattenteAvantEffet(r.getExpo()*60);
             e = appel;
         }
