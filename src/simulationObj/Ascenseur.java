@@ -18,6 +18,7 @@ public class Ascenseur {
     private int nbEtage;
     private boolean direction; //false up, true down
     private int ID;
+    private int tempsOccupe;
 
     Ascenseur(int ID)
     {
@@ -84,5 +85,11 @@ public class Ascenseur {
 
     public List<Integer> getDestinations() {
         return destinations;
+    }
+
+    public void addTempsOccupe(int time) {this.tempsOccupe += time; }
+
+    public int getTempsOccupe() {
+        return tempsOccupe;
     }
 }

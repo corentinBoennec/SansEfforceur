@@ -1,5 +1,6 @@
 import Event.Entrer;
 import Rand.Rand;
+import simulationObj.Ascenseur;
 import simulationObj.Batiment;
 import simulationObj.Client;
 
@@ -7,7 +8,8 @@ public class Main {
 
     public static void main(String[] args) {
         int time = 24* 3600; //24h en secondes
-        Batiment bat = new Batiment(3, "FCFS");
+        String algo = "SSTF";
+        Batiment bat = new Batiment(2, algo);
         Rand r = new Rand(0.5, 60, 0, 7);
         //tout les (poissons) temps quelqu'un entre
         int sum = 0;
@@ -28,21 +30,38 @@ public class Main {
             sum += 60;
         }
 
-        System.out.println(bat.getEvents().size());
-
+        //boucle de Simulation
         while (!bat.getEvents().isEmpty()) {
             bat.executeEvents();
         }
+
         double meanTime = 0;
         int nbClient = 0;
         for (Client c: bat.getClientList())
         {
-            meanTime += c.getTempsDattente();
-            nbClient ++;
+            //if(c.getID() > 30 && c.getID() < bat.getClientList().size() - 30) // warmup et cooldown
+            {
+                meanTime += c.getTempsDattente();
+                nbClient ++;
+            }
         }
+        double meanServerOccupancy = 0;
+        for(Ascenseur a: bat.getAscenseurs())
+        {
+            meanServerOccupancy += (double)a.getTempsOccupe()/(double)time;
+        }
+
         if(nbClient != 0)
             meanTime /= nbClient;
+        if(bat.getAscenseurs().length != 0)
+        {
+            meanServerOccupancy /= bat.getAscenseurs().length;
+            meanServerOccupancy *= 100;
+        }
 
-        System.out.println("le temps d'attente moyen est de " + meanTime +" avec " + nbClient + " visiteurs.");
+        System.out.println("le temps d'attente moyen est de " + meanTime);
+        System.out.println("Le nombre de clients est "+ nbClient);
+        System.out.println("L'algorithme d'ordonnancement utilisé est " + algo);
+        System.out.println("l'occupation moyenne des serveurs est de " + meanServerOccupancy + "%");
     }
 }

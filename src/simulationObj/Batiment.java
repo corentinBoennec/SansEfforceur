@@ -189,11 +189,13 @@ public class Batiment {
             if (c.getIsWaiting())
                 c.addTempsDattente(time);
         }
-    }
-
-    public int deplacerAscenseurs() {
-        //deplacer les ascenseur d'une certaine manière
-        return 0;
+        for(Ascenseur a : ascenseurs)
+        {
+            if(a.getNbPersonne() != 0)
+            {
+                a.addTempsOccupe(time);
+            }
+        }
     }
 
     private Client getClient(int ID) {
@@ -218,218 +220,6 @@ public class Batiment {
         return clients;
     }
 
-    //On a un ascenseur et on monte toujours du 1er on descend toujours des autres
-    //premier à demander premier à être servit
-   /* public int deplacerAscenseursFCFS(int ID) {
-        int togo = 0;
-        //si l'ascenseur est vide
-        if(ascenseurs.getNbPersonne() == 0)
-        {
-            int etagevide = 0;
-            int proxiMin = 0;
-            if(!fileDattenteGlobale.isEmpty()) {
-                proxiMin = Math.abs(ascenseurs.getEtage() - fileDattenteGlobale.get(0).getEtageCourrant());
-                togo = fileDattenteGlobale.get(0).getEtageCourrant();
-
-            }else{
-                ascenseurs.ralenti();
-            }
-
-            //test si il y avait bien quelqu'un en attente
-            if(etagevide < ascenseurs.getNbEtage())
-            {
-                if(togo < ascenseurs.getEtage())
-                {
-                    ascenseurs.setDirection(true);
-                }
-                else
-                {
-                    ascenseurs.setDirection(false);
-                }
-                ascenseurs.setEtage(togo);
-                return  proxiMin;
-            }
-            else return 0;
-        }
-        else //si l'ascenseur n'est pas vide
-        {
-            togo = ascenseurs.getDestinations().get(0);
-            int proxiMin = ascenseurs.getNbEtage() + 1;
-            int proxiAbs;
-            int etagevide = 0;
-            if(togo < ascenseurs.getEtage())
-            {
-                ascenseurs.setDirection(true);
-            }
-            else
-            {
-                ascenseurs.setDirection(false);
-            }
-
-            int nb = Math.abs(ascenseurs.getEtage() - togo);
-            ascenseurs.setEtage(togo);
-            return nb;
-        }
-    }*/
-
-    //retourne l'étage ou aller et l'ascenseur à utiliser
-    public List<Integer> clientsAServirFDFSMuliAscenseur() {
-        /*
-        * AJOUTER UN BOOLEAN FREE DANS ASCENSEUR
-        *
-        * int togo = filesDattente.get(0).get(0).etageCourrant;
-        * int proxiMin = ascenseurs.getNbEtage() + 1;
-        * Ascenseur toUse;
-        * for( Ascenseur a: Asenceurs)
-        * {
-        *   if (a.free == TRUE)
-        *   {
-        *       int proxi = Math.abs(a.getNbEtage() - togo)
-        *       if(proxiMin > proxi)
-        *       {
-        *           toUse = a;
-        *       }
-        *   }
-        * }
-        * List<Integer> res = new ArrayList<>();
-        * res.add(togo);
-        * res.add(a.ID);
-        * return res;
-        */
-        return null;
-    }
-
-    //la demande « la plus proche », quelle que soit la direction dans laquelle on se déplace
-
-    /*public int deplacerAscenseurSSTF(int ID)
-    {
-        int togo = 0;
-        //si l'ascenseur est vide
-        if(ascenseurs.getNbPersonne() == 0)
-        {
-            int proxiMin = ascenseurs.getNbEtage() + 1;
-            int proxiAbs;
-            int etagevide = 0;
-
-            for(List<Client> c: filesDattente){
-                if(!c.isEmpty())
-                {
-                    proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
-
-                    if(proxiAbs<proxiMin && proxiAbs != 0){
-                        proxiMin = proxiAbs;
-                        togo = c.get(0).etageCourrant;
-                    }
-                }
-                else
-                {
-                    etagevide++;
-                }
-            }
-
-
-            //test si il y avait bien quelqu'un en attente
-            if(etagevide < ascenseurs.getNbEtage())
-            {
-                if(togo < ascenseurs.getEtage())
-                {
-                    ascenseurs.setDirection(true);
-                }
-                else
-                {
-                    ascenseurs.setDirection(false);
-                }
-
-                for(List<Client> c: filesDattente)
-                {
-                    if(!c.isEmpty())
-                    {
-                        if (ascenseurs.isDirectionDown() == false)
-                        {
-                            proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
-                            if(c.get(0).getEtageCourrant() < ascenseurs.getEtage())
-                            {
-                                if(proxiAbs<proxiMin && proxiAbs != 0)
-                                {
-                                    proxiMin = proxiAbs;
-                                    togo = c.get(0).etageCourrant;
-                                }
-                            }
-                        }else
-                        {
-                            proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
-                            if(c.get(0).getEtageCourrant() > ascenseurs.getEtage())
-                            {
-                                if(proxiAbs<proxiMin && proxiAbs != 0)
-                                {
-                                    proxiMin = proxiAbs;
-                                    togo = c.get(0).etageCourrant;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                ascenseurs.setEtage(togo);
-                return  proxiMin;
-            }
-            else return 0;
-        }
-        else //si l'ascenseur n'est pas vide
-        {
-            togo = ascenseurs.getDestinations().get(0);
-            int proxiMin = ascenseurs.getNbEtage() + 1;
-            int proxiAbs;
-            int etagevide = 0;
-            if(togo < ascenseurs.getEtage())
-            {
-                ascenseurs.setDirection(true);
-            }
-            else
-            {
-                ascenseurs.setDirection(false);
-            }
-            for(List<Client> c: filesDattente)
-            {
-                if(!c.isEmpty())
-                {
-                    if (ascenseurs.isDirectionDown() == false)
-                    {
-                        proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
-                        if(c.get(0).getEtageCourrant() < ascenseurs.getEtage())
-                        {
-                            if(proxiAbs<proxiMin && proxiAbs != 0)
-                            {
-                                proxiMin = proxiAbs;
-                                togo = c.get(0).etageCourrant;
-                            }
-                        }
-                    }else
-                    {
-                        proxiAbs = Math.abs(ascenseurs.getEtage() - c.get(0).getEtageCourrant());
-                        if(c.get(0).getEtageCourrant() > ascenseurs.getEtage())
-                        {
-                            if(proxiAbs<proxiMin && proxiAbs != 0)
-                            {
-                                proxiMin = proxiAbs;
-                                togo = c.get(0).etageCourrant;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    etagevide++;
-                }
-            }
-
-            int nb = Math.abs(ascenseurs.getEtage() - togo);
-            ascenseurs.setEtage(togo);
-            return nb;
-        }
-    }
-
-*/
     public int deplacerAscensceur(int ID,String algo) {
         int nbEtageDeplace = 0;
 
@@ -441,15 +231,28 @@ public class Batiment {
                 nbEtageDeplace = deplacerAscenseursFCFS(ID);
                 break;
             default:
+                System.out.println("default (sstf)");
                 nbEtageDeplace = deplacerAscenseurSSTF(ID);
                 break;
         }
         return nbEtageDeplace;
     }
 
-    public void ralenti()
+    public int ralentiBas(int ID)
     {
-
+        int direction = 0;
+        if(ascenseurs[ID].getEtage() > 0)
+            direction = -1;
+        return direction;
+    }
+    public int ralentiMilieu(int ID)
+    {
+        int direction = 0;
+        if(ascenseurs[ID].getEtage() > ascenseurs[ID].getNbEtage()/2)
+            direction = -1;
+        else if(ascenseurs[ID].getEtage() < ascenseurs[ID].getNbEtage()/2)
+            direction = 1;
+        return direction;
     }
 
     public int[] getEtagesAscenseurs()
@@ -504,8 +307,7 @@ public class Batiment {
                     etagevide++;
             }
             if (etagevide == ascenseurs[ID].getNbEtage()) {
-                //ralenti();
-                return 0;
+                direction = ralentiBas(ID);
             }
 
         }
@@ -546,7 +348,7 @@ public class Batiment {
                 //éviter d'avoir 1 client dans 2 ascenseurs
                 //ascenseurs[ID].getClientsID().contains(fileDattenteGlobale.get(0))
             } else {
-                ralenti();
+                direction = ralentiBas(ID);
             }
         }
         ascenseurs[ID].setEtage(ascenseurs[ID].getEtage() + direction);
@@ -561,4 +363,7 @@ public class Batiment {
 
     }
 
+    public Ascenseur[] getAscenseurs() {
+        return ascenseurs;
+    }
 }
